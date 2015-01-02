@@ -82,7 +82,7 @@ object List { // `List` companion object. Contains functions for creating and wo
     go(l, Nil)
   }
 
-  def init[A](l: List[A]): List[A] = sys.error("todo")
+  def init[A](l: List[A]): List[A] = reverse(tail(reverse(l)))
 
   def length[A](l: List[A]): Int = {
     @annotation.tailrec
@@ -108,7 +108,7 @@ object List { // `List` companion object. Contains functions for creating and wo
 object ListTest {
   def main(args: Array[String]) = {
     import List._
-    println("Testing list datastructure")
+    println("Testing list data structure")
 
     val testList = Cons(1, Cons(2, Cons(4, Nil)))
 
@@ -120,5 +120,6 @@ object ListTest {
     println(dropWhile(testList, (x:Int) => x < 3))
 
     println(reverse(testList))
+    println(init(testList))
   }
 }

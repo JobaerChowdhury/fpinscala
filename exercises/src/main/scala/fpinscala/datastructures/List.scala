@@ -46,6 +46,9 @@ object List { // `List` companion object. Contains functions for creating and wo
   def product2(ns: List[Double]) = 
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
+  def sum3(ns: List[Int]) = foldLeft(ns, 0)((x,y) => x+y)
+
+  def product3(ns: List[Double]) = foldLeft(ns, 1.0)(_ * _)
 
   def tail[A](l: List[A]): List[A] = l match {
       case Nil => sys.error("empty list")
@@ -82,6 +85,8 @@ object List { // `List` companion object. Contains functions for creating and wo
     go(l, Nil)
   }
 
+  def reverse2[A](l: List[A]): List[A] = foldLeft(l, Nil:List[A])((xs, x) => Cons(x, xs))
+
   def init[A](l: List[A]): List[A] = reverse(tail(reverse(l)))
 
   def length[A](l: List[A]): Int = foldRight(l, 0)((a, b) => b+1)
@@ -91,10 +96,54 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(x, xs) => foldLeft(xs,f(z,x))(f)
   }
 
+  // Exercise 3.13
+  // todo implement using foldRight
+  def foldLeft2[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
+
+  // todo implement using foldLeft
+  def foldRight2[A,B](as: List[A], z: B)(f: (A, B) => B): B = ???
+
+  // Exercise 3.14 .. implement using foldLeft/foldRight
+  def append2[A](a1: List[A], a2: List[A]): List[A] =
+    foldRight(a1, a2)((xs, x) => Cons(xs,x))
+
+  //Exercise 3.15 ... concatenates a list of lists into a single list
+  def concat[A](l: List[List[A]]): List[A] =
+    foldRight(l, Nil:List[A])(append)
+
+  //Exercise 3.16
+  def addOne(l: List[Int]): List[Int] = map(l)(x => x + 1)
+
+  //Exercise 3.17
+  def mkString(l: List[Double]): List[String] =
+      map(l)(x => x.toString)
+
+  // Exercise 3.18
   def map[A,B](l: List[A])(f: A => B): List[B] = l match {
     case Nil => Nil
     case Cons(x, xs) => Cons(f(x), map(xs)(f))
   }
+
+  // Exercise 3.19
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = as match {
+    case Nil => Nil
+    case Cons(x, xs) =>
+      if (f(x)) Cons(x, filter(xs)(f))
+      else filter(xs)(f)
+  }
+
+  //Exercise 3.20
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = concat(map(as)(f))
+
+  //Exercise 3.21 ... implement filter using flatMap
+  def filter2[A](as: List[A])(f: A => Boolean): List[A] = ???
+
+  // Exercise 3.22 ... Write a function that accepts two lists and constructs a new list by adding correspond- ing elements.
+  // For example, List(1,2,3) and List(4,5,6) become List(5,7,9).
+  def addTwo(fst: List[Int], snd: List[Int]) = ???
+
+  // Exercise 3.23 ... implement zipWith
+  def zipWith[A,B,C](fst: List[A], snd: List[B])(f: (A,B) => C) = ???
 }
 
 object ListTest {
@@ -103,6 +152,10 @@ object ListTest {
     println("Testing list data structure")
 
     val testList = Cons(1, Cons(2, Cons(4, Nil)))
+    val list2 = Cons(5, Cons(6, Cons(7, Nil)))
+    val dList = Cons(1.0, Cons(3.9, Cons(4.1, Nil)))
+
+    val ll = Cons(testList, Cons(list2, Nil))
 
     println(tail(testList))
 //    println(tail(Nil))
@@ -115,5 +168,17 @@ object ListTest {
     println(init(testList))
 
     println(length(testList))
+    println(sum3(testList))
+
+    println(reverse2(testList))
+    println(append2(list2, testList))
+
+    println(ll)
+    println(concat(ll))
+
+    println(addOne(testList))
+    println(append(Cons("abcd", Nil), mkString(dList)))
+
+    println(filter(testList)(x => x < 3))
   }
 }

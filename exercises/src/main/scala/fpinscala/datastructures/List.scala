@@ -84,15 +84,7 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   def init[A](l: List[A]): List[A] = reverse(tail(reverse(l)))
 
-  def length[A](l: List[A]): Int = {
-    @annotation.tailrec
-    def go(l: List[A], acc: Int): Int = l match {
-      case Nil => acc
-      case Cons(x, xs) => go(xs, acc+1)
-    }
-
-    go(l, 0)
-  }
+  def length[A](l: List[A]): Int = foldRight(l, 0)((a, b) => b+1)
 
   def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = l match {
     case Nil => z
@@ -121,5 +113,7 @@ object ListTest {
 
     println(reverse(testList))
     println(init(testList))
+
+    println(length(testList))
   }
 }

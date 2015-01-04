@@ -21,7 +21,7 @@ object Tree {
   // Exercise 3.27
   def depth[A](t: Tree[A]): Int = t match {
     case Leaf(_) => 1
-    case Branch(l, r) => 1 + depth(l) max depth(r)
+    case Branch(l, r) => 1 + (depth(l) max depth(r))
   }
 
   // Exercise 3.28
@@ -32,7 +32,18 @@ object Tree {
 
   // Exercise 3.29 ... implement generilized fold function and define
   // maximum, depth and size using that.
-  def fold[A,B](t: Tree[A], z: B) = ???
+  def fold[A,B](t: Tree[A])(l: A => B)(b: (B,B) => B): B = t match {
+    case Leaf(v) => l(v)
+    case Branch(left, right) => b(fold(left)(l)(b), fold(right)(l)(b))
+  }
+
+  def size2[A](t: Tree[A]): Int = fold(t)(a => 1)((b1, b2) => 1 + b1 + b2)
+
+  def maximum2(t: Tree[Int]): Int = fold(t)(a => a)((b1,b2) => b1 max b2)
+
+  def depth2[A](t: Tree[A]): Int = fold(t)(a => 1)((b1, b2) => 1 + (b1 max b2))
+
+  def map2[A,B](t: Tree[A])(f: A => B): Tree[B] = fold(t)(l => Leaf(f(l)) : Tree[B])((b1, b2) => Branch(b1, b2))
 
 }
 
@@ -50,11 +61,20 @@ object TreeTest {
     val iTree = Branch(Branch(Leaf(11), Leaf(9)), Branch(Branch(Leaf(5), Leaf(7)), Leaf(3)))
 
     val mapped = map(iTree) (a => 1)
+    val mapped2 = map(iTree) (a => 7)
 
     println(sTree)
+
+    println(size2(sTree))
     println(size(sTree))
+
+    println(maximum2(iTree))
     println(maximum(iTree))
+
+    println(depth2(iTree))
     println(depth(iTree))
+
     println(mapped)
+    println(mapped2)
   }
 }

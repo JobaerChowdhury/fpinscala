@@ -142,21 +142,17 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   // Exercise 3.22 ... Write a function that accepts two lists and constructs a new list by adding correspond- ing elements.
   // For example, List(1,2,3) and List(4,5,6) become List(5,7,9).
-  def addTwo(fst: List[Int], snd: List[Int]): List[Int] = fst match {
-    case Nil => Nil
-    case Cons(x, xs) => snd match {
-      case Nil => Nil
-      case Cons (y, ys) => Cons(x+y, addTwo(xs, ys))
-    }
+  def addTwo(fst: List[Int], snd: List[Int]): List[Int] = (fst, snd) match {
+    case (Nil, _) => Nil
+    case (_, Nil) => Nil
+    case (Cons(h1, t1), Cons(h2, t2)) => Cons(h1+h2, addTwo(t1, t2))
   }
 
   // Exercise 3.23 ... implement zipWith
-  def zipWith[A, B, C](fst: List[A], snd: List[B])(f: (A, B) => C): List[C] = fst match {
-    case Nil => Nil
-    case Cons(x, xs) => snd match {
-      case Nil => Nil
-      case Cons(y, ys) => Cons(f(x, y), zipWith(xs, ys)(f))
-    }
+  def zipWith[A, B, C](fst: List[A], snd: List[B])(f: (A, B) => C): List[C] = (fst, snd) match {
+    case (_, Nil) => Nil
+    case(Nil, _) => Nil
+    case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1,h2), zipWith(t1, t2)(f))
   }
 
   // Exercise 3.24

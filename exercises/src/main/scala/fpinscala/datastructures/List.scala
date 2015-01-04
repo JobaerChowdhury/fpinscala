@@ -96,12 +96,13 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(x, xs) => foldLeft(xs,f(z,x))(f)
   }
 
-  // Exercise 3.13
-  // todo implement using foldRight
-  def foldLeft2[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
+  // Exercise 3.13 .. implement using foldRight
+  def foldLeft2[A,B](l: List[A], z: B)(f: (B, A) => B): B =
+    foldRight(l, z)((a: A, b: B) => f(b,a))
 
-  // todo implement using foldLeft
-  def foldRight2[A,B](as: List[A], z: B)(f: (A, B) => B): B = ???
+  // implement using foldLeft
+  def foldRight2[A,B](as: List[A], z: B)(f: (A, B) => B): B =
+    foldLeft(reverse(as), z)((b: B, a:A) => f(a,b))
 
   // Exercise 3.14 .. implement using foldLeft/foldRight
   def append2[A](a1: List[A], a2: List[A]): List[A] =
@@ -175,6 +176,12 @@ object ListTest {
 
     println(ll)
     println(concat(ll))
+
+    val r1 = foldLeft2(testList, 10)(_ + _)
+    println(r1)
+
+    val r2 = foldRight2(testList, 11)(_ + _)
+    println(r2)
 
     println(addOne(testList))
     println(append(Cons("abcd", Nil), mkString(dList)))

@@ -137,14 +137,30 @@ object List { // `List` companion object. Contains functions for creating and wo
   def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = concat(map(as)(f))
 
   //Exercise 3.21 ... implement filter using flatMap
-  def filter2[A](as: List[A])(f: A => Boolean): List[A] = ???
+  def filter2[A](as: List[A])(f: A => Boolean): List[A] =
+      flatMap(as)(a => if(f(a)) List(a) else Nil)
 
   // Exercise 3.22 ... Write a function that accepts two lists and constructs a new list by adding correspond- ing elements.
   // For example, List(1,2,3) and List(4,5,6) become List(5,7,9).
-  def addTwo(fst: List[Int], snd: List[Int]) = ???
+  def addTwo(fst: List[Int], snd: List[Int]): List[Int] = fst match {
+    case Nil => Nil
+    case Cons(x, xs) => snd match {
+      case Nil => Nil
+      case Cons (y, ys) => Cons(x+y, addTwo(xs, ys))
+    }
+  }
 
   // Exercise 3.23 ... implement zipWith
-  def zipWith[A,B,C](fst: List[A], snd: List[B])(f: (A,B) => C) = ???
+  def zipWith[A, B, C](fst: List[A], snd: List[B])(f: (A, B) => C): List[C] = fst match {
+    case Nil => Nil
+    case Cons(x, xs) => snd match {
+      case Nil => Nil
+      case Cons(y, ys) => Cons(f(x, y), zipWith(xs, ys)(f))
+    }
+  }
+
+  // Exercise 3.24
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = ???
 }
 
 object ListTest {
@@ -187,5 +203,10 @@ object ListTest {
     println(append(Cons("abcd", Nil), mkString(dList)))
 
     println(filter(testList)(x => x < 3))
+    println(filter2(testList)(x => x < 3))
+
+    println(addTwo(testList, testList))
+
+    println(zipWith(testList, testList)(_ * _))
   }
 }

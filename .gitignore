@@ -7,3 +7,5 @@ project/boot
 project.vim
 *.old
 .idea
+project/.DS_Store
+.DS_Store

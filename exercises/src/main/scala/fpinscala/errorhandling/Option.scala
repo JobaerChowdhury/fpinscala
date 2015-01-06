@@ -48,11 +48,28 @@ object Option {
     else Some(xs.sum / xs.length)
 
   // Exercise 4.2
-  def variance(xs: Seq[Double]): Option[Double] = sys.error("todo")
+  def variance(xs: Seq[Double]): Option[Double] = {
+    mean(xs) flatMap (m => mean(xs map (e => math.pow(e-m,2))))
+  }
 
-  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = sys.error("todo")
+  // Exercise 4.3
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    a flatMap(x => b map (y => f(x,y)))
 
+  // Exercise 4.4
   def sequence[A](a: List[Option[A]]): Option[List[A]] = sys.error("todo")
 
   def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = sys.error("todo")
+}
+
+object OptionTest{
+  import Option._
+  def main (args: Array[String]) {
+    println("Testing Options")
+
+    println(variance(Seq()))
+
+    println(map2(Some(1), Some(2))(_ + _))
+    println(map2(None:Option[Int], Some(2))(_ + _))
+  }
 }

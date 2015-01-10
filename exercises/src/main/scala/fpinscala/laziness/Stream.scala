@@ -58,7 +58,13 @@ trait Stream[+A] {
     case _ => empty
   }
 
-  def forAll(p: A => Boolean): Boolean = sys.error("todo")
+  // Exercise 5.5 ... implement takeWhile using foldRight
+  def takeWhile2(p: A => Boolean): Stream[A] =
+     foldRight(empty[A])((a, b) => if (p(a)) cons(a, b) else empty)
+
+  // Exercise 5.4
+  def forAll(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
@@ -100,6 +106,8 @@ object StreamTest {
     println(test.take(3).toList)
 
     println(test.takeWhile(_ < 5).toList)
+
+    println(test.forAll( _ > 1))
 
     println("Testing streams ....")
   }

@@ -3,16 +3,34 @@ package fpinscala.laziness
 import Stream._
 trait Stream[+A] {
 
-  def headOption: Option[A] = this match {
+  def headOption2: Option[A] = this match {
     case Empty => None
     case Cons(h, t) => Some(h())
   }
+
+  // Exercise 5.6 ... headOption using foldRight
+  def headOption: Option[A] =
+    foldRight(None: Option[A])((a,b) => Some(a))
 
   // Exercise 5.1
   def toList2: List[A] = this match {
     case Empty => Nil
     case Cons(h, t) => h() :: t().toList
   }
+
+  // Exercise 5.7 ... implement map, filter, append and flatMap
+  def map[B](f: A => B): Stream[B] =
+      foldRight(empty: Stream[B])((a,b) => cons(f(a), b))
+
+  def filter(p: A => Boolean): Stream[A] =
+      foldRight(empty: Stream[A])((a, b) => if (p(a)) cons(a, b) else b)
+
+  // todo -- why this type signature... what does it mean .. find out.
+  def append[B >: A] (b: Stream[B]): Stream[B] =
+      foldRight(b: Stream[B])((x, y) => cons(x, y))
+
+  def flatMap[B](f : A => Stream[B]): Stream[B] =
+      foldRight(empty:Stream[B])((a,b) => f(a) append b )
 
   def toList: List[A] = {
     @annotation.tailrec
@@ -104,6 +122,11 @@ object StreamTest {
 
     println(test.drop(3).toList)
     println(test.take(3).toList)
+
+    println(test.map(_ + 3).toList)
+
+    println(test.filter(_ > 3).toList)
+    println(test.append(test).toList)
 
     println(test.takeWhile(_ < 5).toList)
 

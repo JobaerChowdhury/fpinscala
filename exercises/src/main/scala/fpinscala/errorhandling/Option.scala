@@ -57,7 +57,14 @@ object Option {
     a flatMap(x => b map (y => f(x,y)))
 
   // Exercise 4.4
-  def sequence[A](a: List[Option[A]]): Option[List[A]] = sys.error("todo")
+  def sequence[A](a: List[Option[A]]): Option[List[A]] = a match {
+    case Nil => Some(Nil)
+    case x :: xs => x flatMap (xx => sequence(xs) map (xx :: _))
+  }
+
+  // Implement using foldRight
+  def sequence2[A](a: List[Option[A]]): Option[List[A]] =
+    a.foldRight(Some(Nil))((opa,b) => ???)
 
   def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = sys.error("todo")
 }
@@ -71,5 +78,12 @@ object OptionTest{
 
     println(map2(Some(1), Some(2))(_ + _))
     println(map2(None:Option[Int], Some(2))(_ + _))
+
+    val resSeq1 = sequence(List(Some(1), Some(2), Some(3)))
+    println(resSeq1)
+    println(sequence2(List(Some(1), Some(2), Some(3))))
+
+    val resSeq2 = sequence(List(Some(1), None, Some(3)))
+    println(resSeq2)
   }
 }

@@ -122,7 +122,28 @@ object Stream {
   }
 
   // Exercise 5.11
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
+    f(z) match {
+      case None => empty[A]
+      case Some((a,s)) => Stream.cons(a, unfold(s)(f))
+    }
+  }
+
+  def from2(n: Int): Stream[Int] = {
+    unfold(n)(s => Some((s+1, s+1)))
+  }
+
+  def ones2: Stream[Int] = {
+    unfold(1)(s => Some((1,1)))
+  }
+
+  def constant2[A](a: A): Stream[A] = {
+    unfold(a)(s => Some((a, a)))
+  }
+
+  def fibs2: Stream[Int] = {
+    unfold((0,1))(s => Some(s._1, (s._2, s._1 + s._2)))
+  }
 }
 
 
@@ -150,6 +171,11 @@ object StreamTest {
     println(fibs.take(20).toList)
 
     println(test.forAll( _ > 1))
+
+    println(from2(10).take(10).toList)
+    println(ones2.take(10).toList)
+    println(constant2(42).take(10).toList)
+    println(fibs2.take(10).toList)
 
     println("Testing streams ....")
   }

@@ -105,8 +105,23 @@ object Stream {
 
   val ones: Stream[Int] = Stream.cons(1, ones)
 
-  def from(n: Int): Stream[Int] = sys.error("todo")
+  //Exercise 5.8
+  def constant[A](a: A): Stream[A] =
+    Stream.cons(a, constant(a))
 
+  // Exercise 5.9
+  def from(n: Int): Stream[Int] =
+    Stream.cons(n, from(n+1))
+
+  // Exercise 5.10
+  def fibs: Stream[Int] = {
+    def go(n1: Int, n2: Int): Stream[Int] = {
+       cons(n1, go(n2, n1+n2))
+    }
+    go(0,1)
+  }
+
+  // Exercise 5.11
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
 }
 
@@ -129,6 +144,10 @@ object StreamTest {
     println(test.append(test).toList)
 
     println(test.takeWhile(_ < 5).toList)
+    println(constant(2).take(10).toList)
+
+    println(from(100).take(10).toList)
+    println(fibs.take(20).toList)
 
     println(test.forAll( _ > 1))
 

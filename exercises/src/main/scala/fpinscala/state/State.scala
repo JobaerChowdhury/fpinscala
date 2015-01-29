@@ -30,16 +30,40 @@ object RNG {
       (f(a), rng2)
     }
 
-  def nonNegativeInt(rng: RNG): (Int, RNG) = ???
+  // Exercise 6.1
+  def nonNegativeInt(rng: RNG): (Int, RNG) = rng.nextInt match {
+    case (Int.MinValue, rng2) => (0, rng2)
+    case (n, rng2) => (Math.abs(n), rng2)
+  }
 
-  def double(rng: RNG): (Double, RNG) = ???
+  // Exercise 6.2
+  def double(rng: RNG): (Double, RNG) = {
+    val (n, rng2) = nonNegativeInt(rng)
+    (n.toDouble / Int.MaxValue.toDouble, rng2)
+  }
 
-  def intDouble(rng: RNG): ((Int,Double), RNG) = ???
+  // Exercise 6.3
+  def intDouble(rng: RNG): ((Int,Double), RNG) = {
+    val (i, rng2) = rng.nextInt
+    val (d, rng3) = double(rng2)
+    ((i,d), rng3)
+  }
 
-  def doubleInt(rng: RNG): ((Double,Int), RNG) = ???
+  // Exercise 6.3
+  def doubleInt(rng: RNG): ((Double,Int), RNG) = {
+    val ((i, d), rng2) = intDouble(rng)
+    ((d, i), rng2)
+  }
 
-  def double3(rng: RNG): ((Double,Double,Double), RNG) = ???
+  // Exercise 6.3
+  def double3(rng: RNG): ((Double,Double,Double), RNG) = {
+    val (d1, rng2) = double(rng)
+    val (d2, rng3) = double(rng2)
+    val (d3, rng4) = double(rng3)
+    ((d1, d2, d3), rng4)
+  }
 
+  // Exercise 6.3
   def ints(count: Int)(rng: RNG): (List[Int], RNG) = ???
 
   def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
@@ -67,4 +91,13 @@ case class Machine(locked: Boolean, candies: Int, coins: Int)
 object State {
   type Rand[A] = State[RNG, A]
   def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
+}
+
+object StateTest {
+  import State._
+  import RNG._
+
+  def main (args: Array[String]) {
+    println("THis is state test....");
+  }
 }

@@ -92,7 +92,23 @@ object RNG {
 
   def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
 
-  def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
+  // Exercise 6.6
+  def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = {
+    rng => {
+      val (a, rng2) = ra(rng)
+      val (b, rng3) = rb(rng2)
+      (f(a,b), rng3)
+    }
+  }
+
+  def both[A,B](ra: Rand[A], rb: Rand[B]): Rand[(A,B)] =
+      map2(ra, rb)((_, _)) // this is similar to passing (x,y) => (x,y)
+
+  def randIntDouble: Rand[(Int, Double)] =
+    both(int, double)
+
+  def randDoubleInt: Rand[(Double, Int)] =
+    both(double, int)
 
   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = ???
 

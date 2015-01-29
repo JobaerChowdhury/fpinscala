@@ -63,8 +63,28 @@ object RNG {
     ((d1, d2, d3), rng4)
   }
 
-  // Exercise 6.3
-  def ints(count: Int)(rng: RNG): (List[Int], RNG) = ???
+  // Exercise 6.4
+  def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
+    if(count <= 0) (List(), rng)
+    else {
+      val (i1, rng2) = rng.nextInt
+      val (il, rngN) = ints(count-1)(rng2)
+      (i1::il, rngN)
+    }
+  }
+
+  def intsTR(count: Int)(rng: RNG): (List[Int], RNG) = {
+    @annotation.tailrec
+    def go(count: Int, r: RNG, xs: List[Int]): (List[Int], RNG) = {
+      if(count == 0) (xs, r)
+      else {
+        val (i1, r2) = r.nextInt
+        go(count -1, r2, i1::xs)
+      }
+    }
+
+    go(count, rng, List())
+  }
 
   def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
 

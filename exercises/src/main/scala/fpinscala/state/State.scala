@@ -42,6 +42,10 @@ object RNG {
     (n.toDouble / Int.MaxValue.toDouble, rng2)
   }
 
+  //Exercise 6.5
+  def doubleUsingMap : Rand[Double] =
+    map(nonNegativeInt)(n => n.toDouble / Int.MaxValue.toDouble)
+
   // Exercise 6.3
   def intDouble(rng: RNG): ((Int,Double), RNG) = {
     val (i, rng2) = rng.nextInt
@@ -85,6 +89,8 @@ object RNG {
 
     go(count, rng, List())
   }
+
+  def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
 
   def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
 
